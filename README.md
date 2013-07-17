@@ -22,7 +22,7 @@ git clone https://github.com/fatihacet/Teamwork.kdapp.git
 
 
 ## Official Teamwork Mascot
-![](https://raw.github.com/fatihacet/Teamwork.kdapp/master/resources/screenshots/mascot.png)
+![](https://raw.github.com/fatihacet/Teamwork.kdapp/master/resources/mascot.png)
 
 ## Screenshots
 
@@ -30,4 +30,4 @@ git clone https://github.com/fatihacet/Teamwork.kdapp.git
 
 ## Screncast
 
-![](http://d.pr/f/niLY)
+http://d.pr/f/niLY
