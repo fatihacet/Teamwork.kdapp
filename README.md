@@ -6,7 +6,7 @@ Teamwork is a collaborative Koding application which gives you a coding environm
 
 Feel free to fork and contribute :)
 
-## Installing UMLGenerator.kdapp
+## Installing Teamwork.kdapp
 
 You can install the application from Koding App Catalog or you can clone it into your Applications directory.
 
