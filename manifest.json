@@ -8,7 +8,7 @@
   "forceUpdate": false,
   "openWith": "lastActive",
   "behavior": "full",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "name": "Teamwork",
   "identifier": "com.koding.apps.teamwork",
   "path": "~/Applications/Teamwork.kdapp",
