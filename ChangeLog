@@ -1,3 +1,18 @@
-2013-07-17 Fatih Acet <@fatihacet>
+2013-07-17 Fatih Acet <fatih@fatihacet.com>
 
-   * Teamwork (index.coffee): Application created.
+  * Teamwork 0.1.4: Supported joining a session with URL.
+
+
+2013-07-17 Fatih Acet <fatih@fatihacet.com>
+
+  * Teamwork 0.1.3: Fixed join session bug. 
+
+
+2013-07-16 Fatih Acet <fatih@fatihacet.com>
+
+  * Teamwork 0.1.2: Minor fixes for App Catalog icons.
+
+
+2013-07-16 Fatih Acet <fatih@fatihacet.com>
+
+  * Teamwork 0.1: First release.
