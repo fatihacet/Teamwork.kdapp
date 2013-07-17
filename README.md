@@ -23,6 +23,7 @@ git clone https://github.com/fatihacet/Teamwork.kdapp.git
 
 ## Official Teamwork Mascot
 ![](https://raw.github.com/fatihacet/Teamwork.kdapp/master/resources/mascot.png)
+![](https://raw.github.com/fatihacet/Teamwork.kdapp/master/resources/loading.gif)
 
 ## Screenshots
 
