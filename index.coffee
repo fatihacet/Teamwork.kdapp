@@ -1,4 +1,17 @@
+sessionKey = null
+
+appView.on "QueryPassedFromRouter", (query) ->
+  sessionKey = query.sessionKey
+
+appView.emit "ready"
+
 class Teamwork extends CollaborativeWorkspace
+
+  constructor: (options = {}, data) ->
+    
+    options.sessionKey = sessionKey  if sessionKey
+    
+    super options, data
 
   createLoader: ->
     @container.addSubView @loader = new KDCustomHTMLView
