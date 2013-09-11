@@ -21,6 +21,8 @@
     "blocks": {
       "app": {
         "files": [
+          "./app/teamworkworkspace.coffee",
+          "./app/teamworkapp.coffee",
           "./index.coffee"
         ]
       }
