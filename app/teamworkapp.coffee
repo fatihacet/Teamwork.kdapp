@@ -17,24 +17,9 @@ class TeamworkApp extends KDObject
         hint              : "<p>This is a collaborative coding environment where you can team up with others and work on the same code.</p>"
         buttons           : [
           {
-            title         : "Join"
-            cssClass      : "cupid-green join-button"
-            callback      : (panel, workspace) -> workspace.showJoinModal()
-          }
-          {
-            title         : "Share"
+            title         : "Tools"
             cssClass      : "clean-gray"
-            callback      : (panel, workspace, event, hede) -> workspace.showShareView(panel, workspace, event, hede)
-          }
-          {
-            title         : "Import"
-            cssClass      : "clean-gray"
-            callback      : (panel, workspace) => @showImportModal()
-          }
-          {
-            title         : "Export"
-            cssClass      : "clean-gray"
-            callback      : (panel, workspace) => @showExportDialog()
+            callback      : (panel, workspace) => @showToolsModal panel, workspace
           }
         ]
         layout            : 
@@ -63,6 +48,15 @@ class TeamworkApp extends KDObject
             }
           ]
       ]
+    
+  showToolsModal: (panel, workspace) ->
+    modal       = new KDModalView
+      cssClass  : "teamwork-tools-modal"
+      title     : "Teamwork Tools"
+      overlay   : yes
+      width     : 600
+    
+    modal.addSubView new TeamworkTools { modal, panel, workspace, twApp: this }
       
   showExportDialog: ->
     KD.utils.showSaveDialog @teamwork, (input, finderController, dialog) =>
@@ -107,35 +101,15 @@ class TeamworkApp extends KDObject
                     cssClass : "modal-clean-gray"
                     callback : -> modal.destroy()
         , no
-    , { cssClass: "teamwork-export-dialog" }
+    , 
+    cssClass    : "teamwork-export-dialog"
+    finderLabel : "Select a folder on your VM to export"
     
   updateNotification: (notification) ->
     notification.notificationSetTitle "Something went wrong"
     notification.notificationSetTimer 4000
     notification.setClass "error"
         
-  showImportModal: ->
-    modal          = new KDModalView
-      title        : "Import zip file"
-      content      : "<p>you can import a zip file and start working on it. You can even share it with your friends and start working together.</p>"
-      cssClass     : "workspace-modal join-modal"
-      overlay      : yes
-      width        : 500
-      buttons      :
-        Join       :
-          title    : "Import"
-          cssClass : "modal-clean-green"
-          callback : => @importContent urlInput.getValue(), modal
-        Close      :
-          title    : "Close"
-          cssClass : "modal-cancel"
-          callback : -> modal.destroy()
-
-    modal.addSubView urlInput = new KDHitEnterInputView
-      type         : "text"
-      placeholder  : "Paste your zip file url to import"
-      callback     : => @importContent urlInput.getValue(), modal
-      
   showImportWarning: (url) ->
     modal           = new KDModalView
       title         : "Import File"

@@ -1,26 +1,28 @@
 {
-  "devMode": false,
-  "experimental": true,
+  "devMode": true,
+  "experimental": false,
+  "authorNick": "alexdesouza",
   "multiple": false,
-  "authorNick": "fatihacet",
   "background": false,
   "hiddenHandle": false,
   "forceUpdate": false,
   "openWith": "lastActive",
   "behavior": "full",
-  "version": "0.1.4",
+  "version": "0.1",
+  "title": "Teamwork",
   "name": "Teamwork",
   "identifier": "com.koding.apps.teamwork",
   "path": "~/Applications/Teamwork.kdapp",
-  "homepage": "fatihacet.kd.io/teamwork",
-  "author": "Fatih Acet",
-  "repository": "git://github.com/fatihacet/teamwork.kdapp.git",
-  "description": "Teamwork is a collaborative coding environment where you can team up with others and work on the same code.",
+  "homepage": "alexdesouza.localhost/teamwork",
+  "author": "Alex De Souza",
+  "repository": "git://github.com/alexdesouza/teamwork.kdapp.git",
+  "description": "Teamwork : a Koding application created with the blank template.",
   "category": "web-app",
   "source": {
     "blocks": {
       "app": {
         "files": [
+          "./app/teamworktools.coffee",
           "./app/teamworkworkspace.coffee",
           "./app/teamworkapp.coffee",
           "./index.coffee"
@@ -34,14 +36,10 @@
   "options": {
     "type": "tab"
   },
-  "screenshots": [
-    "./resources/screenshots/teamwork.png"
-  ],
   "icns": {
-    "128": "./resources/icon.128.png",
-    "160": "./resources/icon.160.png",
-    "256": "./resources/icon.256.png"
+    "128": "./resources/icon.128.png"
   },
+  "screenshots": [],
   "menu": [],
   "fileTypes": []
 }
