@@ -36,7 +36,7 @@ class TeamworkTools extends JView
         twApp.importContent @importInput.getValue(), modal
     
     @exportButton  = new KDButtonView
-      title        : "Export your session as a zip file"
+      title        : "Export a folder and get a link"
       icon         : yes
       iconClass    : "export"
       callback     : => 
@@ -60,14 +60,14 @@ class TeamworkTools extends JView
           <div class="invite">
             <span class="icon"></span>
             {{> @sessionKey}}
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p>Click and copy this code, give it to your friends. Tell them to enter it in the 'Join' box on the right. They will be coding with you right away.<br><br> Remember, you're giving access to your environment, they can see/steal your sensitive information, use it with caution.</p>
           </div>
         </div>
         <div class="teamwork-modal-content">
           <div class="join">
             <span class="icon"></span>
             {{> @joinInput}}
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do.</p>
+            <p>If you have received a code from a friend of you, copy and paste it here, hit enter. You will be coding together on your friend's environment.</p>
           </div>
         </div>
       </div>
@@ -79,11 +79,11 @@ class TeamworkTools extends JView
       </div>
       <div class="teamwork-modal-content full-width">
         <div class="teamwork-modal-content">
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+          <p>This downloads and prepares an environment. This could be course material, or sample code found on other sites. <br><br> Remember you're downloading somebody else's files, think before you execute them. Just importing them is fairly safe.</p>
           {{> @importInput}}
         </div>
         <div class="teamwork-modal-content">
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+          <p>You can zip a folder of yours, allow others to work on it. <br><br>This is useful when you want someone to help you on Stackoverflow, you want to showcase your Github repo, you're writing a computer book or giving an online course. <br><br> You can create a link here so your audience gets the files they need to work on and their environment will be ready instantly. You're welcome! :)  </p>
           {{> @exportButton}}
         </div>
       </div>
