@@ -58,13 +58,11 @@ class TeamworkApp extends KDObject
     
     modal.addSubView new TeamworkTools { modal, panel, workspace, twApp: this }
       
-  showExportDialog: ->
-    KD.utils.showSaveDialog @teamwork, (input, finderController, dialog) =>
+  showExportDialog: (modal) ->
+    KD.utils.showSaveDialog modal, (input, finderController, dialog) =>
       [node] = finderController.treeController.selectedNodes
       
       return @notify "Please select a folder to save!"  unless node
-      
-      dialog.destroy()
       
       vmController = KD.getSingleton "vmController" 
       nodeData     = node.getData()
@@ -87,7 +85,7 @@ class TeamworkApp extends KDObject
               notification.notificationSetTitle "Your content has been exported."
               notification.notificationSetTimer 4000
               notification.setClass "success"
-              modal          = new KDModalView
+              modal          = new KDBlockingModalView
                 title        : "Export done"
                 cssClass     : "modal-with-text"
                 overlay      : yes
@@ -104,11 +102,6 @@ class TeamworkApp extends KDObject
     , 
     cssClass    : "teamwork-export-dialog"
     finderLabel : "Select a folder on your VM to export"
-    
-  updateNotification: (notification) ->
-    notification.notificationSetTitle "Something went wrong"
-    notification.notificationSetTimer 4000
-    notification.setClass "error"
         
   showImportWarning: (url) ->
     modal           = new KDModalView
