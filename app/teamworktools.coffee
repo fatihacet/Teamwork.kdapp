@@ -8,40 +8,134 @@ class TeamworkTools extends JView
     
     {modal, panel, workspace, twApp} = @getOptions()
     
-    key            = @getOptions().workspace.sessionKey 
-    @sessionKey    = new KDInputView
-      cssClass     : "teamwork-modal-input session-key"
-      defaultValue : key
-      attributes   :
-        readonly   : "readonly"
-      click        : => @sessionKey.getDomElement().select()
+    key              = @getOptions().workspace.sessionKey 
+    @sessionKey      = new KDInputView
+      cssClass       : "teamwork-modal-input session-key"
+      defaultValue   : key
+      attributes     :
+        readonly     : "readonly"
+      click          : => @sessionKey.getDomElement().select()
     
-    @joinInput     = new KDHitEnterInputView
-      type         : "text"
-      cssClass     : "teamwork-modal-input"
-      placeholder  : "Paste new session key and hit enter to join"
-      callback     : => workspace.handleJoinASessionFromModal @joinInput.getValue(), modal
-      
-    @importInput   = new KDHitEnterInputView
-      type         : "text"
-      cssClass     : "teamwork-modal-input"
-      placeholder  : "Paste the link of zip file and hit enter"
+    @joinInput       = new KDHitEnterInputView
+      type           : "text"
+      cssClass       : "teamwork-modal-input"
+      placeholder    : "Paste new session key and hit enter to join"
       validationNotifications: yes
-      validate     :
-        rules      :
-          required : yes
-        messages   :
-          required : "You must select a Kite!"
-      callback     : =>
+      validate       :
+        rules        :
+          required   : yes
+        messages     :
+          required   : "Please check the field."
+      callback       : => workspace.handleJoinASessionFromModal @joinInput.getValue(), modal
+      
+    @importInput     = new KDHitEnterInputView
+      type           : "text"
+      cssClass       : "teamwork-modal-input"
+      placeholder    : "Paste the link of zip file and hit enter"
+      validationNotifications: yes
+      validate       :
+        rules        :
+          required   : yes
+        messages     :
+          required   : "Please check the field."
+      callback       : =>
         twApp.importContent @importInput.getValue(), modal
     
-    @exportButton  = new KDButtonView
-      title        : "Export a folder and get a link"
-      icon         : yes
-      iconClass    : "export"
-      callback     : => 
-        modal.destroy()
-        twApp.showExportDialog()
+    @exportButton    = new KDButtonView
+      title          : "Click here to select a folder to export"
+      icon           : yes
+      iconClass      : "export"
+      callback       : => @showFinder()
+    
+    @exportView      = new KDView
+      cssClass       : "export-file-tree"
+      
+    @exportStartButton = new KDButtonView
+      title          : "Select a folder and click here to export..."
+      cssClass       : "clean-gray hidden exporter"
+      callback       : =>
+        return if @exporting
+        
+        [node]       = @finderController.treeController.selectedNodes
+        unless node
+          return new KD.NotificationView
+            title    : "Please select a folder to save!"
+            type     : "mini"
+            cssClass : "error"
+            duration : 4000
+        
+        vmController = KD.getSingleton "vmController" 
+        nodeData     = node.getData()
+        fileName     = "#{nodeData.name}.zip"
+        path         = FSHelper.plainPath nodeData.path
+        notification = new KDNotificationView
+          title      : "Exporting file..."
+          type       : "mini"
+          duration   : 30000
+          container  : @finderContainer
+        
+        vmController.run "cd #{path}/.. ; zip -r #{fileName} #{nodeData.name}", (err, res) =>
+          @exporting = yes
+          return @updateNotification notification  if err
+          
+          file = FSHelper.createFileFromPath "#{nodeData.parentPath}/#{fileName}"
+          file.fetchContents (err, contents) =>
+            return @updateNotification notification  if err
+            FSHelper.s3.upload fileName, btoa(contents), (err, res) =>
+              return @updateNotification notification  if err
+              vmController.run "rm -f #{path}.zip", (err, res) =>
+              KD.utils.shortenUrl res, (shorten) =>
+                @exporting = no
+                notification.notificationSetTitle "Your content has been exported."
+                notification.notificationSetTimer 4000
+                notification.setClass "success"
+                @getOptions().modal.destroy()
+                modal          = new KDBlockingModalView
+                  title        : "Export done"
+                  cssClass     : "modal-with-text"
+                  overlay      : yes
+                  content      : """
+                    <p>Your content has been uploaded and it's ready to share.</p>
+                    <p><strong>#{location.origin}/Develop/Teamwork?import=#{shorten}</strong></p>
+                  """
+                  buttons      :
+                    Done       :
+                      title    : "Done"
+                      cssClass : "modal-clean-gray"
+                      callback : -> modal.destroy()
+          , no
+      
+  showFinder: ->
+    if @exportView.getSubViews().length is 0
+      @finderContainer    = new KDView
+      @finderController   = new NFinderController
+        nodeIdPath        : "path"
+        nodeParentIdPath  : "parentPath"
+        foldersOnly       : yes
+        contextMenu       : no
+        loadFilesOnInit   : yes
+  
+      @finder = @finderController.getView()
+      @finderController.reset()
+      @finder.setHeight 320
+      @finderContainer.addSubView @finder
+      @finderContainer.addSubView @exportStartButton
+      @exportView.addSubView @finderContainer
+
+    @exportView.setClass "active"
+    @exportButton.hide()
+    @exportStartButton.show()
+    KD.getSingleton("windowController").addLayer @finderContainer
+    @finderContainer.on "ReceivedClickElsewhere", =>
+      @exportStartButton.hide()
+      @exportButton.show()
+      @exportView.unsetClass "active"
+    
+  updateNotification: (notification) ->
+    notification.notificationSetTitle "Something went wrong"
+    notification.notificationSetTimer 4000
+    notification.setClass "error"
+    @exporting = no
     
   pistachio: ->
     """
@@ -60,7 +154,7 @@ class TeamworkTools extends JView
           <div class="invite">
             <span class="icon"></span>
             {{> @sessionKey}}
-            <p>Click and copy this code, give it to your friends. Tell them to enter it in the 'Join' box on the right. They will be coding with you right away.<br><br> Remember, you're giving access to your environment, they can see/steal your sensitive information, use it with caution.</p>
+            <p>Click and copy this code, give it to your friends. Tell them to enter it in the 'Join' box on the right. They will be coding with you right away.</p>
           </div>
         </div>
         <div class="teamwork-modal-content">
@@ -79,11 +173,14 @@ class TeamworkTools extends JView
       </div>
       <div class="teamwork-modal-content full-width">
         <div class="teamwork-modal-content">
-          <p>This downloads and prepares an environment. This could be course material, or sample code found on other sites. <br><br> Remember you're downloading somebody else's files, think before you execute them. Just importing them is fairly safe.</p>
+          <p>This downloads and prepares an environment. This could be course material, or sample code found on other sites. 
+				<br><br> Remember you're downloading somebody else's files, think before you execute them. 
+				Just importing them is fairly safe.</p>
           {{> @importInput}}
         </div>
         <div class="teamwork-modal-content">
-          <p>You can zip a folder of yours, allow others to work on it. <br><br>This is useful when you want someone to help you on Stackoverflow, you want to showcase your Github repo, you're writing a computer book or giving an online course. <br><br> You can create a link here so your audience gets the files they need to work on and their environment will be ready instantly. You're welcome! :)  </p>
+          <p>You can zip a folder of yours, allow others to work on it. <br><br>This is useful when you want someone to help you on Stackoverflow, you want to showcase your Github repo, you're writing a computer book or giving an online course.</p>
+          {{> @exportView}}
           {{> @exportButton}}
         </div>
       </div>
