@@ -90,20 +90,27 @@ class TeamworkTools extends JView
                 notification.notificationSetTimer 4000
                 notification.setClass "success"
                 @getOptions().modal.destroy()
-                modal          = new KDBlockingModalView
-                  title        : "Export done"
-                  cssClass     : "modal-with-text"
-                  overlay      : yes
-                  content      : """
-                    <p>Your content has been uploaded and it's ready to share.</p>
-                    <p><strong>#{location.origin}/Develop/Teamwork?import=#{shorten}</strong></p>
-                  """
-                  buttons      :
-                    Done       :
-                      title    : "Done"
-                      cssClass : "modal-clean-gray"
-                      callback : -> modal.destroy()
+                @showUrlShareModal shorten
           , no
+          
+  showUrlShareModal: (shortenUrl) ->
+    modal          = new KDBlockingModalView
+      title        : "Export done"
+      cssClass     : "modal-with-text"
+      overlay      : yes
+      content      : "<p>Your content has been uploaded and it's ready to share.</p>"
+      buttons      :
+        Done       :
+          title    : "Done"
+          cssClass : "modal-clean-gray"
+          callback : -> modal.destroy()
+          
+    modal.addSubView urlInput = new KDInputView
+      cssClass       : "teamwork-url-share-input"
+      defaultValue   : "#{location.origin}/Develop/Teamwork?import=#{shorten}"
+      attributes     :
+        readonly     : "readonly"
+      click          : => urlInput.getDomElement().select()
       
   showFinder: ->
     if @exportView.getSubViews().length is 0
