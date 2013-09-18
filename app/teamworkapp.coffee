@@ -48,7 +48,7 @@ class TeamworkApp extends KDObject
             }
           ]
       ]
-    
+
   showToolsModal: (panel, workspace) ->
     modal       = new KDModalView
       cssClass  : "teamwork-tools-modal"
@@ -58,51 +58,6 @@ class TeamworkApp extends KDObject
     
     modal.addSubView new TeamworkTools { modal, panel, workspace, twApp: this }
       
-  showExportDialog: (modal) ->
-    KD.utils.showSaveDialog modal, (input, finderController, dialog) =>
-      [node] = finderController.treeController.selectedNodes
-      
-      return @notify "Please select a folder to save!"  unless node
-      
-      vmController = KD.getSingleton "vmController" 
-      nodeData     = node.getData()
-      fileName     = "#{nodeData.name}.zip"
-      path         = FSHelper.plainPath nodeData.path
-      notification = new KDNotificationView
-        title      : "Exporting file..."
-        type       : "mini"
-        duration   : 300000
-      
-      vmController.run "cd #{path}/.. ; zip -r #{fileName} #{nodeData.name}", (err, res) =>
-        return @updateNotification notification  if err
-        
-        file = FSHelper.createFileFromPath "#{nodeData.parentPath}/#{fileName}"
-        file.fetchContents (err, contents) =>
-          return @updateNotification notification  if err
-          FSHelper.s3.upload fileName, btoa(contents), (err, res) =>
-            return @updateNotification notification  if err
-            KD.utils.shortenUrl res, (shorten) =>
-              notification.notificationSetTitle "Your content has been exported."
-              notification.notificationSetTimer 4000
-              notification.setClass "success"
-              modal          = new KDBlockingModalView
-                title        : "Export done"
-                cssClass     : "modal-with-text"
-                overlay      : yes
-                content      : """
-                  <p>Your content has been uploaded and it's ready to share.</p>
-                  <p><strong>#{location.origin}/Develop/Teamwork?import=#{shorten}</strong></p>
-                """
-                buttons      :
-                  Done       :
-                    title    : "Done"
-                    cssClass : "modal-clean-gray"
-                    callback : -> modal.destroy()
-        , no
-    , 
-    cssClass    : "teamwork-export-dialog"
-    finderLabel : "Select a folder on your VM to export"
-        
   showImportWarning: (url) ->
     modal           = new KDModalView
       title         : "Import File"
