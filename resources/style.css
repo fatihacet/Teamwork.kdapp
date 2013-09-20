@@ -137,6 +137,14 @@
   width: 247px;
 }
 .teamwork-export-dialog .kdformview .kdlabel:first-child,
-.teamwork-export-dialog .kdformview .kdinput {
+.teamwork-export-dialog .kdformview .kdinput,
+.teamwork .inner-header .help {
   display: none !important;
+}
+.teamwork-url-share-input {
+  font-size: 16px;
+  border: none;
+  width: 390px;
+  margin: 10px;
+  height: 32px;
 }
